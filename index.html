@@ -670,7 +670,7 @@
         @media screen and (max-width: 600px) {
             .game-layout {
                 flex-direction: column;
-                gap: 15px;
+                gap: 10px;
             }
 
             .side-character-container,
@@ -679,7 +679,7 @@
             }
 
             .game-wrapper {
-                transform: scale(min(calc(80vw / 530), calc(70vh / 650)));
+                transform: scale(min(calc(75vw / 530), calc(65vh / 650)));
             }
         }
 
@@ -692,7 +692,7 @@
             }
 
             .game-wrapper {
-                transform: scale(min(calc(80vw / 850), calc(75vh / 600)));
+                transform: scale(min(calc(75vw / 850), calc(65vh / 600)));
             }
         }
 
@@ -704,14 +704,20 @@
             }
 
             .downloads {
-                transform: scale(0.7);
+                transform: scale(0.6);
                 transform-origin: top left;
-                top: 10px;
-                left: 10px;
+                top: 5px;
+                left: 5px;
             }
 
             .game-wrapper {
-                transform: scale(min(calc(85vw / 550), calc(85vh / 600)));
+                transform: scale(min(calc(80vw / 550), calc(65vh / 600)));
+            }
+        }
+
+        @media screen and (max-height: 450px) {
+            .game-wrapper {
+                transform: scale(min(calc(80vw / 550), calc(60vh / 600)));
             }
         }
 
