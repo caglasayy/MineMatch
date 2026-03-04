@@ -615,15 +615,13 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100%;
-            width: 100%;
             transform-origin: center center;
         }
 
         .downloads {
             position: fixed;
-            top: 20px;
-            left: 20px;
+            top: 15px;
+            left: 15px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -661,77 +659,17 @@
             fill: currentColor;
         }
 
-        @media screen and (max-width: 850px) {
-            .game-wrapper {
-                transform: scale(calc(85vw / 850));
-            }
-        }
-
-        @media screen and (max-width: 600px) {
-            .game-layout {
-                flex-direction: column;
-                gap: 10px;
-            }
-
-            .side-character-container,
-            .corner-title {
-                display: none;
-            }
-
-            .game-wrapper {
-                transform: scale(min(calc(75vw / 530), calc(65vh / 650)));
-            }
-        }
-
-        @media screen and (max-height: 800px) {
-            body {
-                justify-content: center;
-                height: 100vh;
-                min-height: 100vh;
-                overflow: hidden;
-            }
-
-            .game-wrapper {
-                transform: scale(min(calc(75vw / 850), calc(65vh / 600)));
-            }
-        }
-
-        @media screen and (max-height: 600px) {
+        @media screen and (max-width: 850px),
+        screen and (max-height: 620px) {
 
             .side-character-container,
             .corner-title {
                 display: none !important;
             }
 
-            .downloads {
-                transform: scale(0.6);
-                transform-origin: top left;
-                top: 5px;
-                left: 5px;
-            }
-
-            .game-wrapper {
-                transform: scale(min(calc(80vw / 550), calc(65vh / 600)));
-            }
-        }
-
-        @media screen and (max-height: 450px) {
-            .game-wrapper {
-                transform: scale(min(calc(80vw / 550), calc(60vh / 600)));
-            }
-        }
-
-        /* Eğer telefondan dikey modda girilirse oyunu kendi ekseninde döndür */
-        @media screen and (max-width: 500px) and (orientation: portrait) {
-            .game-wrapper {
-                transform: rotate(90deg) scale(min(calc(75vh / 530), calc(75vw / 650)));
-            }
-
-            .downloads {
-                transform: rotate(90deg) scale(0.7);
-                transform-origin: top left;
-                top: 10px;
-                left: 80px;
+            .game-layout {
+                flex-direction: column;
+                gap: 15px;
             }
         }
     </style>
@@ -1711,6 +1649,62 @@
                 navigator.serviceWorker.register('sw.js');
             });
         }
+
+        // Dinamik Ekran Boyutlandırma (Responsive Board Scale)
+        function resizeGame() {
+            const wrapper = document.querySelector('.game-wrapper');
+            const downloads = document.querySelector('.downloads');
+
+            let winW = window.innerWidth;
+            let winH = window.innerHeight;
+
+            let isPortrait = winH > winW && winW <= 600;
+
+            // Oyunun orijinal yer kaplayacağı varsayılan max boyutlar
+            let gameW = (winW < 850 || winH < 620) ? 500 : 800;
+            let gameH = 600;
+
+            let scale = 1;
+
+            if (isPortrait) {
+                // Telefon dikeyken oyunu otomatik yan yatırıyoruz
+                let padding = 30; // Kenar boşluğu
+                let scaleX = (winH - padding) / gameW;
+                let scaleY = (winW - padding) / gameH;
+                scale = Math.min(scaleX, scaleY);
+                if (scale > 1) scale = 1;
+
+                wrapper.style.transform = `rotate(90deg) scale(${scale})`;
+
+                if (downloads) {
+                    downloads.style.transform = `rotate(90deg) scale(0.7)`;
+                    downloads.style.transformOrigin = `top left`;
+                    downloads.style.top = '10px';
+                    downloads.style.left = '80px';
+                }
+            } else {
+                // Telefon yatay veya bilgisayar ekranı
+                let paddingW = 40;
+                let paddingH = 30;
+                let scaleX = (winW - paddingW) / gameW;
+                let scaleY = (winH - paddingH) / gameH;
+                scale = Math.min(scaleX, scaleY);
+                if (scale > 1.1) scale = 1.1; // En fazla bu kadar büyüsün
+
+                wrapper.style.transform = `scale(${scale})`;
+
+                if (downloads) {
+                    downloads.style.transform = winH < 600 ? `scale(0.6)` : `scale(1)`;
+                    downloads.style.transformOrigin = `top left`;
+                    downloads.style.top = '10px';
+                    downloads.style.left = '10px';
+                }
+            }
+        }
+
+        window.addEventListener('resize', resizeGame);
+        window.addEventListener('orientationchange', resizeGame);
+        resizeGame(); // İlk açılışta hemen boyutlandır
     </script>
 </body>
 
